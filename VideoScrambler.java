@@ -42,11 +42,22 @@ public class VideoScrambler extends PApplet {
 		    
 		    if (glitchFrame()) { 
 		    	int samples = controlPanel.getNumSamples();
-		    		    	
+		    	int uniformHeight = 0;
+		    	if (controlPanel.snapToGrid())
+		    		uniformHeight = controlPanel.getMaxSampleHeight();
+		    	
 		        for (int i = 1; i <= samples; i++) {
-		            int selection_width = randomWidth();   
-		            int selection_height = randomHeight();
-		            PImage temp_image = selectSample(selection_width, selection_height); 
+		            int selectionHeight, selectionWidth;
+		        	if (uniformHeight > 0) {
+		        		selectionHeight = uniformHeight;
+		        		selectionWidth = selectionHeight;
+		        	}
+		            else {
+		            	selectionHeight = randomHeight();
+		            	selectionWidth = randomWidth(selectionHeight); 
+		            }
+		              
+		            PImage temp_image = selectSample(selectionWidth, selectionHeight); 
 		            int new_x = randomXCoord();
 		            int new_y = randomYCoord();
 		            image(temp_image,new_x,new_y);
@@ -64,11 +75,11 @@ public class VideoScrambler extends PApplet {
 	    return false;
 	}
 
-	int randomWidth() {
-	    int selection_width = (int)(random(controlPanel.getHorizWarp()*controlPanel.getMaxSampleHeight()));
-	    if (selection_width > width) 
+	int randomWidth(int selectionHeight) {
+	    int selectionWidth = (int)(random(controlPanel.getHorizWarp())*selectionHeight);
+	    if (selectionWidth > width) 
 	        return width;      
-	    return selection_width;
+	    return selectionWidth;
 	}
 
 	int randomHeight() {

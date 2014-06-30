@@ -9,10 +9,12 @@ import javax.swing.JCheckBox;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
 
-public class ParamWindow implements ActionListener {
+public class ParamWindow implements ActionListener, ItemListener {
 	private JFrame window;
 	private JSpinner samples;
 	private JSpinner maxSampleHeight;
@@ -20,9 +22,11 @@ public class ParamWindow implements ActionListener {
 	private JSpinner glitchProbability;
 	private JCheckBox chckbxSaveFrames;
 	private JButton btnChooseSourceMovie;
+	private JCheckBox chckbxSnapSamplesTo;
 	private FileDialog fileChooser;
 	private boolean newFileChosen = false;
 	private final String buttonText = "Choose source movie file";
+	private final String snapSampleText = "Snap to square grid";
 	private final int WIDTH = 450;
 	private final int HEIGHT = 150;
 	
@@ -68,13 +72,18 @@ public class ParamWindow implements ActionListener {
 		window.getContentPane().add(glitchProbability);
 		
 		chckbxSaveFrames = new JCheckBox("Save Frames");
-		chckbxSaveFrames.setBounds(6, 73, 128, 23);
+		chckbxSaveFrames.setBounds(6, 97, 128, 23);
 		window.getContentPane().add(chckbxSaveFrames);
 		
 		btnChooseSourceMovie = new JButton(buttonText);
 		btnChooseSourceMovie.setBounds(195, 72, 203, 29);
 		window.getContentPane().add(btnChooseSourceMovie);
 		btnChooseSourceMovie.addActionListener(this);
+		
+		chckbxSnapSamplesTo = new JCheckBox(snapSampleText);
+		chckbxSnapSamplesTo.setBounds(6, 73, 164, 23);
+		window.getContentPane().add(chckbxSnapSamplesTo);
+		chckbxSnapSamplesTo.addItemListener(this);
 		
 		fileChooser = new FileDialog(window, "Choose source movie", FileDialog.LOAD);
 	    fileChooser.setVisible(true);    
@@ -103,9 +112,13 @@ public class ParamWindow implements ActionListener {
 		return (Float)glitchProbability.getValue();
 	}
 	
+	public boolean snapToGrid() {
+		return chckbxSnapSamplesTo.isSelected();
+	}
+	
 	/** 
 	 * Postcondition: newFileSelected() == false
-	 * @return the currently selected file path, or null if none
+	 * @return the currently selected video file path, or null if none
 	 */
 	public String getFilename() {
 		newFileChosen = false;
@@ -116,7 +129,7 @@ public class ParamWindow implements ActionListener {
 	
 	/** 
 	 * 
-	 * @return whether a new file has been selected since the last call to getFilename()
+	 * @return whether a new video file has been selected since the last call to getFilename()
 	 */
 	public boolean newFileSelected() {
 		return newFileChosen;
@@ -128,6 +141,12 @@ public class ParamWindow implements ActionListener {
 	    	fileChooser.setVisible(true);
 	    	if (!previousFile.equals(fileChooser.getDirectory() + fileChooser.getFile())) 
 	    		newFileChosen = true;
+	    }
+	}
+	
+	public void itemStateChanged(ItemEvent e) {
+	    if (e.getItemSelectable() == chckbxSnapSamplesTo && e.getStateChange() == ItemEvent.SELECTED) {
+	    	horizontalWarp.setValue(new Float(1));
 	    }
 	}
 }
