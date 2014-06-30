@@ -2,7 +2,6 @@ package videoscrambler;
 
 import processing.core.*;
 import processing.video.*;
-import java.awt.FileDialog;
 
 public class VideoScrambler extends PApplet {
 	final int FRAME_RATE = 30;
@@ -10,16 +9,6 @@ public class VideoScrambler extends PApplet {
 	ParamWindow controlPanel;  
 	Movie inputMovie;
 	String filename;
-
-
-	/*int samples = 40;
-	int max_sample_size = 50;
-	float horizontalWarp = 5;
-	float glitchProbability = (float)0.5;
-	boolean saveFrames = false;*/
-	
-
-	
 	
 	public VideoScrambler() {
 		controlPanel = new ParamWindow();
@@ -27,43 +16,49 @@ public class VideoScrambler extends PApplet {
 	}
 	
 	public void setup() {	
-		filename = getFilename();
-	    inputMovie = new Movie(this, filename); 
+		filename = controlPanel.getFilename();
+		openMovie(filename);
 	    frameRate(FRAME_RATE);
-	    inputMovie.loop();
 	    frame.setResizable(true);
 	}
 	
-	String getFilename() {
-	    FileDialog fileChooser;
-	    fileChooser = new FileDialog(frame, "Choose source movie", FileDialog.LOAD);
-	    fileChooser.setDirectory(dataPath(""));
-	    fileChooser.setVisible(true);
-	    return fileChooser.getDirectory() + "/" + fileChooser.getFile();
+	private void openMovie(String filename) {
+		if (filename != null) {
+			inputMovie = new Movie(this, filename);
+			if (inputMovie != null)
+				inputMovie.loop();
+		}
 	}
 	
 	public void draw () { 
-	    inputMovie.read();
-	    frame.setSize(inputMovie.width, inputMovie.height); //annoying to have to set this every frame
-	    image(inputMovie,0,0);
-	      
-	    loadPixels();
-	    
-	    if (glitchFrame()) { 
-	    	int samples = controlPanel.getNumSamples();
-	    		    	
-	        for (int i = 1; i <= samples; i++) {
-	            int selection_width = randomWidth();   
-	            int selection_height = randomHeight();
-	            PImage temp_image = selectSample(selection_width, selection_height); 
-	            int new_x = randomXCoord();
-	            int new_y = randomYCoord();
-	            image(temp_image,new_x,new_y);
-	        } 
-	    } 
-	    
-	    if (controlPanel.saveFrames())
-	        saveFrame(filename + "-####" + ".png");  
+		if (controlPanel.newFileSelected()) {
+			String filename = controlPanel.getFilename();
+			if (filename != null)
+				openMovie(filename);
+		}
+	    if (inputMovie != null && inputMovie.available()) {
+			inputMovie.read();
+		    frame.setSize(inputMovie.width, inputMovie.height); //annoying to have to set this every frame
+		    image(inputMovie,0,0);
+		      
+		    loadPixels();
+		    
+		    if (glitchFrame()) { 
+		    	int samples = controlPanel.getNumSamples();
+		    		    	
+		        for (int i = 1; i <= samples; i++) {
+		            int selection_width = randomWidth();   
+		            int selection_height = randomHeight();
+		            PImage temp_image = selectSample(selection_width, selection_height); 
+		            int new_x = randomXCoord();
+		            int new_y = randomYCoord();
+		            image(temp_image,new_x,new_y);
+		        } 
+		    } 
+		    
+		    if (controlPanel.saveFrames())
+		        saveFrame(filename + "-####" + ".png");	
+	    }  
 	} 
 	
 	boolean glitchFrame() {
