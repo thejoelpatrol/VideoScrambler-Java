@@ -1,6 +1,7 @@
 package videoscrambler;
 
 import processing.core.*;
+import processing.core.*;
 import processing.video.*;
 
 public class VideoScrambler extends PApplet {
@@ -42,13 +43,13 @@ public class VideoScrambler extends PApplet {
 		    
 		    if (glitchFrame()) { 
 		    	int samples = controlPanel.getNumSamples();
+		    	boolean snap = controlPanel.snapToGrid();
 		    	int uniformHeight = 0;
-		    	if (controlPanel.snapToGrid())
-		    		uniformHeight = controlPanel.getMaxSampleHeight();
+		    	if (snap) uniformHeight = controlPanel.getMaxSampleHeight();
 		    	
 		        for (int i = 1; i <= samples; i++) {
 		            int selectionHeight, selectionWidth;
-		        	if (uniformHeight > 0) {
+		        	if (snap) {
 		        		selectionHeight = uniformHeight;
 		        		selectionWidth = selectionHeight;
 		        	}
@@ -58,8 +59,8 @@ public class VideoScrambler extends PApplet {
 		            }
 		              
 		            PImage temp_image = selectSample(selectionWidth, selectionHeight); 
-		            int new_x = randomXCoord();
-		            int new_y = randomYCoord();
+		            int new_x = randomXCoord(selectionWidth, snap);
+		            int new_y = randomYCoord(selectionHeight, snap);
 		            image(temp_image,new_x,new_y);
 		        } 
 		    } 
@@ -106,15 +107,31 @@ public class VideoScrambler extends PApplet {
 	    return sample;
 	}
 
-	int randomXCoord() {
-	    int x = (int)(random(width)) - controlPanel.getMaxSampleHeight();
+	/**
+	 * Precondition: sampleWidth > 0
+	 * @param sampleWidth
+	 * @return
+	 */
+	int randomXCoord(int sampleWidth, boolean snap) {
+	    int x = (int)(random(width)) - sampleWidth;	    
+	    if (snap)
+	    	x -= x % sampleWidth;
+	    
 	    if (x < 0)
 	        return 0;
 	    return x;
 	}
-
-	int randomYCoord() {
-	    int y = (int)(random(height - controlPanel.getMaxSampleHeight()/2)) ;
+	
+	/**
+	 * Precondition: sampleHeight >= 0
+	 * @param sampleHeight
+	 * @return
+	 */
+	int randomYCoord(int sampleHeight, boolean snap) {
+	    int y = (int)(random(height - sampleHeight/2)) ;
+	    if (snap)
+	    	y -= y % sampleHeight;
+	    
 	    if (y < 0)
 	        return 0;
 	    return y;

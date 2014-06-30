@@ -43,8 +43,8 @@ public class ParamWindow implements ActionListener, ItemListener {
 		lblMaxSampleHeight.setBounds(6, 45, 126, 16);
 		window.getContentPane().add(lblMaxSampleHeight);
 		
-		JLabel lblSampleHorizontalWarp = new JLabel("Sample width/height ratio");
-		lblSampleHorizontalWarp.setBounds(163, 11, 164, 16);
+		JLabel lblSampleHorizontalWarp = new JLabel("Max sample width/height ratio");
+		lblSampleHorizontalWarp.setBounds(137, 11, 203, 16);
 		window.getContentPane().add(lblSampleHorizontalWarp);
 		
 		samples = new JSpinner();
