@@ -7,17 +7,26 @@ import java.awt.FileDialog;
 public class VideoScrambler extends PApplet {
 	final int FRAME_RATE = 30;
 	
-	int samples = 40;
+	ParamWindow controlPanel;  
+	Movie inputMovie;
+	String filename;
+
+
+	/*int samples = 40;
 	int max_sample_size = 50;
 	float horizontalWarp = 5;
 	float glitchProbability = (float)0.5;
-	boolean saveFrames = false;
+	boolean saveFrames = false;*/
 	
-	Movie inputMovie;
-	String filename;
+
 	
 	
-	public void setup() {
+	public VideoScrambler() {
+		controlPanel = new ParamWindow();
+		
+	}
+	
+	public void setup() {	
 		filename = getFilename();
 	    inputMovie = new Movie(this, filename); 
 	    frameRate(FRAME_RATE);
@@ -39,8 +48,10 @@ public class VideoScrambler extends PApplet {
 	    image(inputMovie,0,0);
 	      
 	    loadPixels();
-	  
-	    if (glitchFrame()) {  
+	    
+	    if (glitchFrame()) { 
+	    	int samples = controlPanel.getNumSamples();
+	    		    	
 	        for (int i = 1; i <= samples; i++) {
 	            int selection_width = randomWidth();   
 	            int selection_height = randomHeight();
@@ -51,25 +62,26 @@ public class VideoScrambler extends PApplet {
 	        } 
 	    } 
 	    
-	    if (saveFrames)
+	    if (controlPanel.saveFrames())
 	        saveFrame(filename + "-####" + ".png");  
 	} 
 	
 	boolean glitchFrame() {
-	    if (random(1) > glitchProbability)
+	    if (random(1) > controlPanel.getGlitchProbability())
 	        return true;
 	    return false;
 	}
 
 	int randomWidth() {
-	    int selection_width = (int)(random(horizontalWarp*max_sample_size));
+		
+	    int selection_width = (int)(random(controlPanel.getHorizWarp()*controlPanel.getMaxSampleHeight()));
 	    if (selection_width > width) 
 	        return width;      
 	    return selection_width;
 	}
 
 	int randomHeight() {
-	    int selection_height = (int)(random(max_sample_size));
+	    int selection_height = (int)(random(controlPanel.getMaxSampleHeight()));
 	    if (selection_height > height)
 	        return height;
 	    return selection_height;
@@ -93,14 +105,14 @@ public class VideoScrambler extends PApplet {
 	}
 
 	int randomXCoord() {
-	    int x = (int)(random(width)) - max_sample_size;
+	    int x = (int)(random(width)) - controlPanel.getMaxSampleHeight();
 	    if (x < 0)
 	        return 0;
 	    return x;
 	}
 
 	int randomYCoord() {
-	    int y = (int)(random(height - max_sample_size/2)) ;
+	    int y = (int)(random(height - controlPanel.getMaxSampleHeight()/2)) ;
 	    if (y < 0)
 	        return 0;
 	    return y;
