@@ -103,6 +103,10 @@ public class ParamWindow implements ActionListener {
 		return (Float)glitchProbability.getValue();
 	}
 	
+	/** 
+	 * Postcondition: newFileSelected() == false
+	 * @return the currently selected file path, or null if none
+	 */
 	public String getFilename() {
 		newFileChosen = false;
 		if (fileChooser.getFile() != null)

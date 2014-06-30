@@ -8,16 +8,13 @@ public class VideoScrambler extends PApplet {
 	
 	ParamWindow controlPanel;  
 	Movie inputMovie;
-	String filename;
 	
 	public VideoScrambler() {
-		controlPanel = new ParamWindow();
-		
+		controlPanel = new ParamWindow();	
 	}
 	
 	public void setup() {	
-		filename = controlPanel.getFilename();
-		openMovie(filename);
+		openMovie(controlPanel.getFilename());
 	    frameRate(FRAME_RATE);
 	    frame.setResizable(true);
 	}
@@ -56,19 +53,18 @@ public class VideoScrambler extends PApplet {
 		        } 
 		    } 
 		    
-		    if (controlPanel.saveFrames())
-		        saveFrame(filename + "-####" + ".png");	
+		    //if (controlPanel.saveFrames())
+		    //    saveFrame(filename + "-####" + ".png");	
 	    }  
 	} 
 	
 	boolean glitchFrame() {
-	    if (random(1) > controlPanel.getGlitchProbability())
+	    if (random(1) < controlPanel.getGlitchProbability())
 	        return true;
 	    return false;
 	}
 
 	int randomWidth() {
-		
 	    int selection_width = (int)(random(controlPanel.getHorizWarp()*controlPanel.getMaxSampleHeight()));
 	    if (selection_width > width) 
 	        return width;      
