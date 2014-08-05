@@ -1,11 +1,10 @@
 package videoscrambler;
 
 import processing.core.*;
-import processing.core.*;
 import processing.video.*;
 
-public class VideoScrambler extends PApplet {
-	final int FRAME_RATE = 30;
+public class VideoScrambler extends PApplet {	
+	private final int FRAME_RATE = 30;
 	
 	ParamWindow controlPanel;  
 	Movie inputMovie;
@@ -36,37 +35,19 @@ public class VideoScrambler extends PApplet {
 		}
 	    if (inputMovie != null && inputMovie.available()) {
 			inputMovie.read();
-		    frame.setSize(inputMovie.width, inputMovie.height); //annoying to have to set this every frame
+		    frame.setSize(inputMovie.width, inputMovie.height); // annoying to have to set this every frame
 		    image(inputMovie,0,0);
 		      
 		    loadPixels();
 		    
 		    if (glitchFrame()) { 
-		    	int samples = controlPanel.getNumSamples();
-		    	boolean snap = controlPanel.snapToGrid();
-		    	int uniformHeight = 0;
-		    	if (snap) uniformHeight = controlPanel.getMaxSampleHeight();
-		    	
-		        for (int i = 1; i <= samples; i++) {
-		            int selectionHeight, selectionWidth;
-		        	if (snap) {
-		        		selectionHeight = uniformHeight;
-		        		selectionWidth = selectionHeight;
-		        	}
-		            else {
-		            	selectionHeight = randomHeight();
-		            	selectionWidth = randomWidth(selectionHeight); 
-		            }
-		              
-		            PImage temp_image = selectSample(selectionWidth, selectionHeight); 
-		            int new_x = randomXCoord(selectionWidth, snap);
-		            int new_y = randomYCoord(selectionHeight, snap);
-		            image(temp_image,new_x,new_y);
-		        } 
+		    	selectAndPlaceSamples();
+		        
+		        if (controlPanel.saveFrames())
+			        saveFrame(inputMovie.filename + "-########" + ".png");
 		    } 
 		    
-		    //if (controlPanel.saveFrames())
-		    //    saveFrame(filename + "-####" + ".png");	
+		    	
 	    }  
 	} 
 	
@@ -74,6 +55,30 @@ public class VideoScrambler extends PApplet {
 	    if (random(1) < controlPanel.getGlitchProbability())
 	        return true;
 	    return false;
+	}
+	
+	void selectAndPlaceSamples() {
+		int samples = controlPanel.getNumSamples();
+    	boolean snap = controlPanel.snapToGrid();
+    	int uniformHeight = 0;
+    	if (snap) uniformHeight = controlPanel.getMaxSampleHeight();
+    	
+        for (int i = 1; i <= samples; i++) {
+            int selectionHeight, selectionWidth;
+        	if (snap) {
+        		selectionHeight = uniformHeight;
+        		selectionWidth = selectionHeight;
+        	}
+            else {
+            	selectionHeight = randomHeight();
+            	selectionWidth = randomWidth(selectionHeight); 
+            }
+              
+            PImage temp_image = selectSample(selectionWidth, selectionHeight); 
+            int new_x = randomXCoord(selectionWidth, snap);
+            int new_y = randomYCoord(selectionHeight, snap);
+            image(temp_image,new_x,new_y);
+        } 
 	}
 
 	int randomWidth(int selectionHeight) {

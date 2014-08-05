@@ -71,8 +71,8 @@ public class ParamWindow implements ActionListener, ItemListener {
 		glitchProbability.setBounds(333, 39, 65, 28);
 		window.getContentPane().add(glitchProbability);
 		
-		chckbxSaveFrames = new JCheckBox("Save Frames");
-		chckbxSaveFrames.setBounds(6, 97, 128, 23);
+		chckbxSaveFrames = new JCheckBox("Save Frames (more CPU)");
+		chckbxSaveFrames.setBounds(6, 97, 185, 23);
 		window.getContentPane().add(chckbxSaveFrames);
 		
 		btnChooseSourceMovie = new JButton(buttonText);
