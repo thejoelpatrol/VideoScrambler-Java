@@ -71,14 +71,14 @@ public class ParamWindow implements ActionListener, ItemListener {
 		glitchProbability.setBounds(333, 39, 65, 28);
 		window.getContentPane().add(glitchProbability);
 		
-		chckbxSaveFrames = new JCheckBox("Save Frames (more CPU)");
-		chckbxSaveFrames.setBounds(6, 97, 185, 23);
-		window.getContentPane().add(chckbxSaveFrames);
+		/*chckbxSaveFrames = new JCheckBox("Save Frames (more CPU, saves to video location)");
+		chckbxSaveFrames.setBounds(6, 102, 335, 23);
+		window.getContentPane().add(chckbxSaveFrames);*/
 		
 		btnChooseSourceMovie = new JButton(buttonText);
-		btnChooseSourceMovie.setBounds(195, 72, 203, 29);
+		/*btnChooseSourceMovie.setBounds(195, 72, 203, 29);
 		window.getContentPane().add(btnChooseSourceMovie);
-		btnChooseSourceMovie.addActionListener(this);
+		btnChooseSourceMovie.addActionListener(this);*/
 		
 		chckbxSnapSamplesTo = new JCheckBox(snapSampleText);
 		chckbxSnapSamplesTo.setBounds(6, 73, 164, 23);
@@ -86,14 +86,15 @@ public class ParamWindow implements ActionListener, ItemListener {
 		chckbxSnapSamplesTo.addItemListener(this);
 		
 		fileChooser = new FileDialog(window, "Choose source movie", FileDialog.LOAD);
-	    fileChooser.setVisible(true);    
+	    //fileChooser.setVisible(true);    
 	    
 		window.setVisible(true);
 		window.pack();
 	}
 	
 	public boolean saveFrames() {
-		return chckbxSaveFrames.isSelected();
+		//return chckbxSaveFrames.isSelected();
+		return false;
 	}
 	
 	public int getNumSamples() {

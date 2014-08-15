@@ -8,19 +8,25 @@ public class VideoScrambler extends PApplet {
 	
 	ParamWindow controlPanel;  
 	Movie inputMovie;
+	Capture cam;
 	
 	public VideoScrambler() {
 		controlPanel = new ParamWindow();	
 	}
 	
 	public void setup() {	
-		openMovie(controlPanel.getFilename());
+		//openMovie(controlPanel.getFilename());
+		size(640,480);
+		cam = new Capture(this, Capture.list()[0]);
+		cam.start();
 	    frameRate(FRAME_RATE);
 	    frame.setResizable(true);
 	}
 	
 	private void openMovie(String filename) {
 		if (filename != null) {
+			if (inputMovie != null)
+				inputMovie.dispose();
 			inputMovie = new Movie(this, filename);
 			if (inputMovie != null)
 				inputMovie.loop();
@@ -28,36 +34,30 @@ public class VideoScrambler extends PApplet {
 	}
 	
 	public void draw () { 
-		if (controlPanel.newFileSelected()) {
+		/*if (controlPanel.newFileSelected()) {
 			String filename = controlPanel.getFilename();
-			if (filename != null)
-				openMovie(filename);
-		}
-	    if (inputMovie != null && inputMovie.available()) {
-			inputMovie.read();
-		    frame.setSize(inputMovie.width, inputMovie.height); // annoying to have to set this every frame
-		    image(inputMovie,0,0);
-		      
-		    loadPixels();
-		    
+			openMovie(filename);
+		}*/
+	    if (cam.available()) {
+			cam.read();
+		    //frame.setSize(inputMovie.width, inputMovie.height); // annoying to have to set this every frame, but it may be unavoidable
+		    image(cam,0,0);
+		      	    
 		    if (glitchFrame()) { 
-		    	selectAndPlaceSamples();
-		        
+		    	loadPixels();
+		    	selectAndPlaceSamples();		       
 		        if (controlPanel.saveFrames())
 			        saveFrame(inputMovie.filename + "-########" + ".png");
-		    } 
-		    
-		    	
+		    } 	    	
 	    }  
 	} 
 	
 	boolean glitchFrame() {
-	    if (random(1) < controlPanel.getGlitchProbability())
-	        return true;
-	    return false;
+		return random(1) < controlPanel.getGlitchProbability();
 	}
 	
 	void selectAndPlaceSamples() {
+		// we don't want the values of these parameters to change within the loop, since this is all within one frame
 		int samples = controlPanel.getNumSamples();
     	boolean snap = controlPanel.snapToGrid();
     	int uniformHeight = 0;
@@ -118,10 +118,11 @@ public class VideoScrambler extends PApplet {
 	 * @return
 	 */
 	int randomXCoord(int sampleWidth, boolean snap) {
-	    int x = (int)(random(width)) - sampleWidth;	    
-	    if (snap)
+	    int x;
+	    if (snap) {
+	    	x = (int)(random(width));
 	    	x -= x % sampleWidth;
-	    
+	    } else x = (int)(random(width)) - sampleWidth/2;
 	    if (x < 0)
 	        return 0;
 	    return x;
@@ -133,10 +134,12 @@ public class VideoScrambler extends PApplet {
 	 * @return
 	 */
 	int randomYCoord(int sampleHeight, boolean snap) {
-	    int y = (int)(random(height - sampleHeight/2)) ;
-	    if (snap)
+	    int y;
+	    if (snap) {
+	    	y = (int)(random(height));
 	    	y -= y % sampleHeight;
-	    
+	    } else 
+	    	y = (int)(random(height)) - sampleHeight/2;
 	    if (y < 0)
 	        return 0;
 	    return y;
