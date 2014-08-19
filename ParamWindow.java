@@ -123,7 +123,9 @@ public class ParamWindow implements ActionListener, ItemListener {
 		return chckbxSnapSamplesTo.isSelected();
 	}
 	
-	/** 
+	/** Returns the pathname of the last selected file. The caller is expected to act on this, 
+	 * as calls to newFileSelected() after this will return false, until another new file
+	 * is selected.
 	 * Postcondition: newFileSelected() == false
 	 * @return the currently selected video file path, or null if none
 	 */

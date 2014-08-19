@@ -13,25 +13,21 @@ public class VideoScrambler extends PApplet {
 	}
 	
 	public void setup() {	
-		//openMovie(controlPanel.getFilename());
 		size(640,480);
-		
-		/*cam = new Capture(this);
-		video = new VideoSource(cam);
-		video.start();*/
-		
 	    frameRate(FRAME_RATE);
 	    frame.setResizable(true);
 	}
 	
 	private void openMovie(String filename) {
-		if (filename != null) {
+		if (filename != null) { 
 			if (video != null)
 				video.dispose();
-			video = new VideoSource(this, filename);
-			video.start();
-			//if (inputMovie != null)
-				//inputMovie.loop();
+			try {
+				video = new VideoSource(this, filename); 
+				video.start();				
+			} catch (Exception e) {
+				System.out.println("Can't open video file " + filename);
+			}
 		}
 	}
 	
@@ -40,13 +36,10 @@ public class VideoScrambler extends PApplet {
 			String filename = controlPanel.getFilename();
 			openMovie(filename);
 		}
-		if (controlPanel.switchToWebcam()) {
-			//Capture cam = new Capture(this);
-			video = new VideoSource(this);
-			video.start();
-		} 
+		if (controlPanel.switchToWebcam()) 
+			switchToWebcam();			
 	    if (video != null && video.available()) {
-			video.loadPixels();
+			//video.loadPixels();
 			video.read();
 		    frame.setSize(video.width, video.height); // annoying to have to set this every frame, but it may be unavoidable
 		    image(video,0,0);
@@ -55,16 +48,27 @@ public class VideoScrambler extends PApplet {
 		    	loadPixels();
 		    	selectAndPlaceSamples();		       
 		        if (controlPanel.saveFrames())
-			        saveFrame(video.getName() + "-########" + ".png");
+			        saveFrame(video.getName() + "-########" + ".jpg");
 		    } 	    	
 	    }  
 	} 
 	
-	boolean glitchFrame() {
+	private void switchToWebcam() {
+		try {
+			if (video != null)
+				video.dispose();
+			video = new VideoSource(this); // this constructor uses the default webcam
+			video.start();	
+		} catch (Exception e) {
+			System.out.println("Coudln't find the webcam.");
+		}
+	}
+	
+	private boolean glitchFrame() {
 		return random(1) < controlPanel.getGlitchProbability();
 	}
 	
-	void selectAndPlaceSamples() {
+	private void selectAndPlaceSamples() {
 		// we don't want the values of these parameters to change within the loop, since this is all within one frame
 		int samples = controlPanel.getNumSamples();
     	boolean snap = controlPanel.snapToGrid();
@@ -89,21 +93,21 @@ public class VideoScrambler extends PApplet {
         } 
 	}
 
-	int randomWidth(int selectionHeight) {
+	private int randomWidth(int selectionHeight) {
 	    int selectionWidth = (int)(random(controlPanel.getHorizWarp())*selectionHeight);
 	    if (selectionWidth > width) 
 	        return width;      
 	    return selectionWidth;
 	}
 
-	int randomHeight() {
+	private int randomHeight() {
 	    int selection_height = (int)(random(controlPanel.getMaxSampleHeight()));
 	    if (selection_height > height)
 	        return height;
 	    return selection_height;
 	}
 
-	PImage selectSample(int selection_width, int selection_height) {
+	private PImage selectSample(int selection_width, int selection_height) {
 	    PImage sample = new PImage(selection_width,selection_height);
 	    int start_x = (int)(random(width-selection_width));
 	    int start_y = (int)(random(height-selection_height));
@@ -125,7 +129,7 @@ public class VideoScrambler extends PApplet {
 	 * @param sampleWidth
 	 * @return
 	 */
-	int randomXCoord(int sampleWidth, boolean snap) {
+	private int randomXCoord(int sampleWidth, boolean snap) {
 	    int x;
 	    if (snap) {
 	    	x = (int)(random(width));
@@ -141,7 +145,7 @@ public class VideoScrambler extends PApplet {
 	 * @param sampleHeight
 	 * @return
 	 */
-	int randomYCoord(int sampleHeight, boolean snap) {
+	private int randomYCoord(int sampleHeight, boolean snap) {
 	    int y;
 	    if (snap) {
 	    	y = (int)(random(height));
