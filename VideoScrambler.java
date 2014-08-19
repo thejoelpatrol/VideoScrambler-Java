@@ -5,10 +5,7 @@ import processing.video.*;
 
 public class VideoScrambler extends PApplet {	
 	private final int FRAME_RATE = 30;
-	
 	ParamWindow controlPanel;  
-	Movie inputMovie;
-	Capture cam;
 	VideoSource video;
 	
 	public VideoScrambler() {
@@ -17,7 +14,7 @@ public class VideoScrambler extends PApplet {
 	
 	public void setup() {	
 		//openMovie(controlPanel.getFilename());
-		//size(640,480);
+		size(640,480);
 		
 		/*cam = new Capture(this);
 		video = new VideoSource(cam);
@@ -44,10 +41,10 @@ public class VideoScrambler extends PApplet {
 			openMovie(filename);
 		}
 		if (controlPanel.switchToWebcam()) {
-			cam = new Capture(this);
-			video = new VideoSource(cam);
+			//Capture cam = new Capture(this);
+			video = new VideoSource(this);
 			video.start();
-		}
+		} 
 	    if (video != null && video.available()) {
 			video.loadPixels();
 			video.read();
@@ -58,7 +55,7 @@ public class VideoScrambler extends PApplet {
 		    	loadPixels();
 		    	selectAndPlaceSamples();		       
 		        if (controlPanel.saveFrames())
-			        saveFrame(inputMovie.filename + "-########" + ".png");
+			        saveFrame(video.getName() + "-########" + ".png");
 		    } 	    	
 	    }  
 	} 

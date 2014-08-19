@@ -78,6 +78,11 @@ public class VideoSource extends processing.core.PImage {
 		else videoFile.dispose();		
 	}
 	
+	public String getName() {
+		if (useWebcam) return "webcam";
+		return videoFile.filename;
+	}
+	
 	/*public void pause() throws UnsupportedOperationException {
 		if (useWebcam) throw new UnsupportedOperationException ("pause() called on a webcam");
 		else videoFile.pause();
