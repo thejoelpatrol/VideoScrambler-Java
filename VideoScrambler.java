@@ -9,6 +9,7 @@ public class VideoScrambler extends PApplet {
 	ParamWindow controlPanel;  
 	Movie inputMovie;
 	Capture cam;
+	VideoSource video;
 	
 	public VideoScrambler() {
 		controlPanel = new ParamWindow();	
@@ -17,8 +18,9 @@ public class VideoScrambler extends PApplet {
 	public void setup() {	
 		//openMovie(controlPanel.getFilename());
 		size(640,480);
-		cam = new Capture(this, Capture.list()[0]);
-		cam.start();
+		cam = new Capture(this);
+		video = new VideoSource(cam);
+		video.start();
 	    frameRate(FRAME_RATE);
 	    frame.setResizable(true);
 	}
@@ -38,11 +40,12 @@ public class VideoScrambler extends PApplet {
 			String filename = controlPanel.getFilename();
 			openMovie(filename);
 		}*/
-	    if (cam.available()) {
-			cam.read();
+	    if (video.available()) {
+			video.read();
+			video.loadPixels();
 		    //frame.setSize(inputMovie.width, inputMovie.height); // annoying to have to set this every frame, but it may be unavoidable
-		    image(cam,0,0);
-		      	    
+		    image(video,0,0);
+			
 		    if (glitchFrame()) { 
 		    	loadPixels();
 		    	selectAndPlaceSamples();		       
