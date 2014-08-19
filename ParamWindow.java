@@ -25,7 +25,9 @@ public class ParamWindow implements ActionListener, ItemListener {
 	private JCheckBox chckbxSnapSamplesTo;
 	private FileDialog fileChooser;
 	private boolean newFileChosen = false;
-	private final String buttonText = "Choose source movie file";
+	private boolean switchToWebcam = false;
+	private final String movieButtonText = "Choose source movie file";
+	private final String webcamButtonText = "Use webcam";
 	private final String snapSampleText = "Snap to square grid";
 	private final int WIDTH = 450;
 	private final int HEIGHT = 150;
@@ -75,7 +77,7 @@ public class ParamWindow implements ActionListener, ItemListener {
 		chckbxSaveFrames.setBounds(6, 102, 335, 23);
 		window.getContentPane().add(chckbxSaveFrames);*/
 		
-		btnChooseSourceMovie = new JButton(buttonText);
+		btnChooseSourceMovie = new JButton(movieButtonText);
 		btnChooseSourceMovie.setBounds(195, 72, 203, 29);
 		window.getContentPane().add(btnChooseSourceMovie);
 		btnChooseSourceMovie.addActionListener(this);
@@ -84,6 +86,11 @@ public class ParamWindow implements ActionListener, ItemListener {
 		chckbxSnapSamplesTo.setBounds(6, 73, 164, 23);
 		window.getContentPane().add(chckbxSnapSamplesTo);
 		chckbxSnapSamplesTo.addItemListener(this);
+		
+		JButton btnUseWebcam = new JButton(webcamButtonText);
+		btnUseWebcam.setBounds(195, 101, 117, 29);
+		window.getContentPane().add(btnUseWebcam);
+		btnUseWebcam.addActionListener(this);
 		
 		fileChooser = new FileDialog(window, "Choose source movie", FileDialog.LOAD);
 	    //fileChooser.setVisible(true);    
@@ -135,13 +142,26 @@ public class ParamWindow implements ActionListener, ItemListener {
 	public boolean newFileSelected() {
 		return newFileChosen;
 	}
+
+	/** 
+	 * Postcondition: will return false on next call, unless the button is clicked again. i.e. it is assumed that 
+	 * the caller acts on a return value of true, so it won't be returned again
+	 * @return whether the webcam button has been clicked
+	 */
+	public boolean switchToWebcam() {
+		boolean webcam = switchToWebcam;
+		if (switchToWebcam) switchToWebcam = false;
+		return webcam;
+	}
 	
 	public void actionPerformed(ActionEvent e) {
-	    if (buttonText.equals(e.getActionCommand())) {
-	    	String previousFile = fileChooser.getDirectory() + fileChooser.getFile();
+	    if (movieButtonText.equals(e.getActionCommand())) {
+	    	//String previousFile = fileChooser.getDirectory() + fileChooser.getFile();
 	    	fileChooser.setVisible(true);
-	    	if (!previousFile.equals(fileChooser.getDirectory() + fileChooser.getFile())) 
+	    	//if (!previousFile.equals(fileChooser.getDirectory() + fileChooser.getFile())) 
 	    		newFileChosen = true;
+	    } else if (webcamButtonText.equals(e.getActionCommand())) {
+	    	switchToWebcam = true;
 	    }
 	}
 	

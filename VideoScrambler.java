@@ -17,10 +17,12 @@ public class VideoScrambler extends PApplet {
 	
 	public void setup() {	
 		//openMovie(controlPanel.getFilename());
-		size(640,480);
-		cam = new Capture(this);
+		//size(640,480);
+		
+		/*cam = new Capture(this);
 		video = new VideoSource(cam);
-		video.start();
+		video.start();*/
+		
 	    frameRate(FRAME_RATE);
 	    frame.setResizable(true);
 	}
@@ -41,7 +43,12 @@ public class VideoScrambler extends PApplet {
 			String filename = controlPanel.getFilename();
 			openMovie(filename);
 		}
-	    if (video.available()) {
+		if (controlPanel.switchToWebcam()) {
+			cam = new Capture(this);
+			video = new VideoSource(cam);
+			video.start();
+		}
+	    if (video != null && video.available()) {
 			video.loadPixels();
 			video.read();
 		    frame.setSize(video.width, video.height); // annoying to have to set this every frame, but it may be unavoidable
