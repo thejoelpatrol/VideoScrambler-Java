@@ -27,23 +27,24 @@ public class VideoScrambler extends PApplet {
 	
 	private void openMovie(String filename) {
 		if (filename != null) {
-			if (inputMovie != null)
-				inputMovie.dispose();
-			inputMovie = new Movie(this, filename);
-			if (inputMovie != null)
-				inputMovie.loop();
+			if (video != null)
+				video.dispose();
+			video = new VideoSource(this, filename);
+			video.start();
+			//if (inputMovie != null)
+				//inputMovie.loop();
 		}
 	}
 	
 	public void draw () { 
-		/*if (controlPanel.newFileSelected()) {
+		if (controlPanel.newFileSelected()) {
 			String filename = controlPanel.getFilename();
 			openMovie(filename);
-		}*/
+		}
 	    if (video.available()) {
-			video.read();
 			video.loadPixels();
-		    //frame.setSize(inputMovie.width, inputMovie.height); // annoying to have to set this every frame, but it may be unavoidable
+			video.read();
+		    frame.setSize(video.width, video.height); // annoying to have to set this every frame, but it may be unavoidable
 		    image(video,0,0);
 			
 		    if (glitchFrame()) { 

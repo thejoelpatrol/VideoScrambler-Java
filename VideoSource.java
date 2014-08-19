@@ -1,6 +1,7 @@
 package videoscrambler;
 
 import processing.video.*;
+import processing.core.PApplet;
 
 public class VideoSource extends processing.core.PImage {
 	Movie videoFile;
@@ -9,15 +10,23 @@ public class VideoSource extends processing.core.PImage {
 	boolean firstFrame = true;
 	
 	public VideoSource (Capture camera) throws NullPointerException {
-		if (camera == null) throw new NullPointerException("Invalid camera passed to VideoSource -- camera reference points to null.");
+		if (camera == null) throw new NullPointerException("No valid camera passed to VideoSource. Probably couldn't detect the webcam.");
 		cam = camera;
 		useWebcam = true;
 	}
 	
 	public VideoSource (Movie movie) throws NullPointerException {
-		if (videoFile == null) throw new NullPointerException("Invalid video file passed to VideoSource. Movie is not open, points to null.");
+		if (movie == null) throw new NullPointerException("Invalid video file passed to VideoSource. Probably couldn't open the selected movie.");
 		videoFile = movie;
-		useWebcam = false;		
+		useWebcam = false;
+	}
+	
+	public VideoSource (PApplet parent, String filename) throws NullPointerException {
+		this(new Movie(parent, filename));
+	}
+	
+	public VideoSource(PApplet parent) {
+		this(new Capture(parent));				
 	}
 	
 	public boolean available() {
@@ -31,7 +40,6 @@ public class VideoSource extends processing.core.PImage {
 		if (firstFrame) {
 			if (useWebcam) super.init(cam.width, cam.height, ARGB);
 			else super.init(videoFile.width, videoFile.height, ARGB);
-			firstFrame = false;
 		}
 		updatePixels();
 	}

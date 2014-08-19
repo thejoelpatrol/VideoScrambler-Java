@@ -76,9 +76,9 @@ public class ParamWindow implements ActionListener, ItemListener {
 		window.getContentPane().add(chckbxSaveFrames);*/
 		
 		btnChooseSourceMovie = new JButton(buttonText);
-		/*btnChooseSourceMovie.setBounds(195, 72, 203, 29);
+		btnChooseSourceMovie.setBounds(195, 72, 203, 29);
 		window.getContentPane().add(btnChooseSourceMovie);
-		btnChooseSourceMovie.addActionListener(this);*/
+		btnChooseSourceMovie.addActionListener(this);
 		
 		chckbxSnapSamplesTo = new JCheckBox(snapSampleText);
 		chckbxSnapSamplesTo.setBounds(6, 73, 164, 23);
